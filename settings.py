@@ -50,7 +50,7 @@ class Settings:
         """Инициализирует настройки, изменяющиеся в ходе игры."""
         self.ship_speed_factor = 10
         self.bullet_speed_factor = 10
-        self.cat_speed_factor = 30
+        self.cat_speed_factor = 1
 
         # fleet_direction = 1 обозначает движение вправо, а -1 - влево.
         self.fleet_direction = 1
