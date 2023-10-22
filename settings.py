@@ -13,8 +13,7 @@ class Settings:
         self.background_image = pygame.image.load('images/background.bmp')
         self.fps = 60
 
-        # Параметры корабля.
-        self.ship_speed = 1.5
+        # Колличество жизней.
         self.heart_limit = 3
 
         # Параметры снаряда.
@@ -43,7 +42,7 @@ class Settings:
                            pygame.image.load('images/catalien3.bmp'),
                            ]
 
-        # Запуск инициализации динамических настроек
+        # Запуск инициализации динамических настроек.
         self.initialize_dynamic_settings()
 
     def initialize_dynamic_settings(self):
@@ -54,7 +53,7 @@ class Settings:
 
         # fleet_direction = 1 обозначает движение вправо, а -1 - влево.
         self.fleet_direction = 1
-        # Подсчет очков
+        # Колличество очков за кота.
         self.cat_points = 50
 
     def increase_speed(self):
