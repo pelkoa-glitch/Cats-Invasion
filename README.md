@@ -9,11 +9,15 @@
 ```
 $ git clone https://github.com/pelkoa-glitch/Cats-Invasion.git
 ```
-### Запускаем:
+### Устанавливаем зависимости:
 ```
 $ cd Cats-Invasion
 
-$ pytohn cats_invasions.py
+$ pip install -r requirements.txt
+```
+### Запускаем:
+```
+$ python cats_invasions.py
 ```
 
 ## Управление:
