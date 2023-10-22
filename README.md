@@ -4,11 +4,12 @@
 
 ![image info](./images/catsinvasions.PNG)
 
-## Как запустить?
+## Как поиграть?
 ### Клонируем репозиторий:
 ```
 $ git clone https://github.com/pelkoa-glitch/Cats-Invasion.git
 ```
+
 ### Устанавливаем зависимости:
 ```
 $ cd Cats-Invasion
@@ -20,7 +21,7 @@ $ pip install -r requirements.txt
 $ python cats_invasions.py
 ```
 
-## Управление:
+### Управление:
 ```
 Начать игру: кликнуть мышной по кнопке "Play"
 
