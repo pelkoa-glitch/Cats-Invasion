@@ -2,7 +2,7 @@ from settings import Settings
 
 
 class Button:
-
+    """Кнопка Play"""
     def __init__(self, ai_game):
         """Инициализирует атрибуты кнопки."""
         self.settings = Settings()

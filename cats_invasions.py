@@ -7,10 +7,10 @@ from scoreboard import Scoreboard
 from button import Button
 from ship import Ship
 from bullet import Bullet
-from alien import Alien
+from cat import Cat
 
 
-class AlienInvasion:
+class CatsInvasion:
     """Класс для управления ресурсами и поведением игры."""
 
     def __init__(self):
@@ -19,20 +19,19 @@ class AlienInvasion:
         self.settings = Settings()
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height))
-        pygame.display.set_caption("Alien Invasion")
+        pygame.display.set_caption("Cat's Invasion")
         self.clock = pygame.time.Clock()
         # Создание экземпляра для хранения игровой статистики.
         # И панели результатов.
         self.stats = GameStats(self)
         self.sb = Scoreboard(self)
-        self.alien_image_number = 0
+        self.cat_image_number = 0
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
-        self.aliens = pygame.sprite.Group()
+        self.cats = pygame.sprite.Group()
         self._create_fleet()
         # Создание кнопки Play.
         self.play_button = Button(self)
-        self.button_clicked = False
 
     def run_game(self):
         """Запуск основного цикла игры."""
@@ -42,7 +41,7 @@ class AlienInvasion:
             if self.stats.game_active:
                 self.ship.update()
                 self._update_bullets()
-                self._update_aliens()
+                self._update_cats()
             self._update_screen()
 
     def _check_events(self):
@@ -73,15 +72,14 @@ class AlienInvasion:
             self._update_screen()
             self.sb.prep_score()
             self.sb.prep_level()
-            self.sb.prep_ships()
-            # Очистка списков пришельцев и снарядов.
-            self.aliens.empty()
+            self.sb.prep_hearts()
+            # Очистка списков котов и снарядов.
+            self.cats.empty()
             self.bullets.empty()
             # Создание нового флота и размещение корабля в центре.
             self._create_fleet()
             self.ship.center_ship()
-            # Указатель мыши скрывается.
-            pygame.mouse.set_visible(False)
+
 
     def _check_keydown_events(self, event):
         """Реагирует на нажатие клавиш."""
@@ -115,21 +113,21 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
-        self._check_bullet_alien_collisions()
+        self._check_bullet_cat_collisions()
 
-    def _check_bullet_alien_collisions(self):
-        # Проверка попаданий в пришельцев.
-        # При обнаружении попадания удалить снаряд и пришельца.
+    def _check_bullet_cat_collisions(self):
+        # Проверка попаданий в котов.
+        # При обнаружении попадания удалить снаряд и кота.
         collisions = pygame.sprite.groupcollide(
-            self.bullets, self.aliens, True, True)
+            self.bullets, self.cats, True, True)
 
         if collisions:
-            for aliens in collisions.values():
-                self.stats.score += self.settings.alien_points * len(aliens)
+            for cats in collisions.values():
+                self.stats.score += self.settings.cat_points * len(cats)
             self.sb.prep_score()
             self.sb.check_high_score()
 
-        if not self.aliens:
+        if not self.cats:
             # Уничтожение существующих снарядов и создание нового флота.
             self.bullets.empty()
             self._create_fleet()
@@ -140,13 +138,13 @@ class AlienInvasion:
             self.sb.prep_level()
 
     def _ship_hit(self):
-        """Обрабатывает столкновение корабля с пришельцем."""
-        if self.stats.ships_left > 0:
+        """Обрабатывает столкновение корабля с котом."""
+        if self.stats.hearts_left > 0:
             # Уменьшение количества оставшихся жизней.
-            self.stats.ships_left -= 1
-            self.sb.prep_ships()
-            # Очистка списка пришельцев и снарядов.
-            self.aliens.empty()
+            self.stats.hearts_left -= 1
+            self.sb.prep_hearts()
+            # Очистка списка котов и снарядов.
+            self.cats.empty()
             self.bullets.empty()
             # Создание нового флота и размещение корабля в центре.
             self._create_fleet()
@@ -156,70 +154,70 @@ class AlienInvasion:
         else:
             self.stats.game_active = False
 
-    def _update_aliens(self):
-        """Обновление позиции всех пришельцев во флоте."""
+    def _update_cats(self):
+        """Обновление позиции всех котов во флоте."""
         self._check_fleet_edges()
-        self.aliens.update()
-        # Проверка коллизий "пришелец - корабль".
-        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+        self.cats.update()
+        # Проверка коллизий "кот - корабль".
+        if pygame.sprite.spritecollideany(self.ship, self.cats):
             self._ship_hit()
-        # Проверить, добрались ли пришельцы до нижнего края экрана.
-        self._check_aliens_bottom()
+        # Проверить, добрались ли коты до нижнего края экрана.
+        self._check_cats_bottom()
 
     def _create_fleet(self):
         """Создание флота вторжения."""
-        # Создание пришельца и вычисление количества пришельцев в ряду
-        # Интервал между соседними пришельцами равен ширине пришельца.
-        alien = Alien(self)
-        alien_width, alien_height = alien.rect.size
-        available_space_x = self.settings.screen_width - (2 * alien_width)
-        number_aliens_x = available_space_x // (2 * alien_width)
+        # Создание кота и вычисление количества котов в ряду
+        # Интервал между соседними котами равен ширине кота.
+        cat = Cat(self)
+        cat_width, cat_height = cat.rect.size
+        available_space_x = self.settings.screen_width - (2 * cat_width)
+        number_cats_x = available_space_x // (2 * cat_width)
         # Определяет количество рядов, помещающихся на экране.
         ship_height = self.ship.rect.height
         available_space_y = (self.settings.screen_height -
-                             (3 * alien_height) - ship_height)
-        number_rows = available_space_y // (2 * alien_height)
+                             (3 * cat_height) - ship_height)
+        number_rows = available_space_y // (2 * cat_height)
         # Создание флота вторжения.
         for row_number in range(number_rows):
-            for alien_number in range(number_aliens_x):
-                self._create_alien(alien_number, row_number, self.alien_image_number)
+            for cat_number in range(number_cats_x):
+                self._create_cat(cat_number, row_number, self.cat_image_number)
 
-    def _change_alien_img(self):
-        """Меняет изображение картинки после создания пришельца"""
-        if self.alien_image_number == 3:
-            self.alien_image_number = 0
+    def _change_cat_img(self):
+        """Меняет изображение картинки после создания кота"""
+        if self.cat_image_number == 3:
+            self.cat_image_number = 0
         else:
-            self. alien_image_number += 1
+            self.cat_image_number += 1
 
-    def _create_alien(self, alien_number, row_number, alien_image_number):
-        """Создание пришельца и размещение его в ряду."""
-        alien = Alien(self)
-        alien_width, alien_height = alien.rect.size
-        alien.x = alien_width + 2 * alien_width * alien_number
-        alien.rect.x = alien.x
-        alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
-        alien.image = self.settings.alien_images[alien_image_number]
-        self.aliens.add(alien)
-        self._change_alien_img()
+    def _create_cat(self, cat_number, row_number, cat_image_number):
+        """Создание кота и размещение его в ряду."""
+        cat = Cat(self)
+        cat_width, cat_height = cat.rect.size
+        cat.x = cat_width + 2 * cat_width * cat_number
+        cat.rect.x = cat.x
+        cat.rect.y = cat.rect.height + 2 * cat.rect.height * row_number
+        cat.image = self.settings.cat_images[cat_image_number]
+        self.cats.add(cat)
+        self._change_cat_img()
 
     def _check_fleet_edges(self):
-        """Реагирует на достижение пришельцами края."""
-        for alien in self.aliens.sprites():
-            if alien.check_edges():
+        """Реагирует на достижение котами края."""
+        for cat in self.cats.sprites():
+            if cat.check_edges():
                 self._change_fleet_direction()
                 break
 
     def _change_fleet_direction(self):
         """Опускает весь флот и меняет его направление."""
-        for alien in self.aliens.sprites():
-            alien.rect.y += self.settings.fleet_drop_speed
+        for cat in self.cats.sprites():
+            cat.rect.y += self.settings.fleet_drop_speed
         self.settings.fleet_direction *= -1
 
-    def _check_aliens_bottom(self):
-        """Проверяет, добрались ли пришельцы до нижнего края экрана."""
+    def _check_cats_bottom(self):
+        """Проверяет, добрались ли коты до нижнего края экрана."""
         screen_rect = self.screen.get_rect()
-        for alien in self.aliens.sprites():
-            if alien.rect.bottom >= screen_rect.bottom:
+        for cat in self.cats.sprites():
+            if cat.rect.bottom >= screen_rect.bottom:
                 """Происходит то же, что и при столкновении с кораблем."""
                 self._ship_hit()
                 break
@@ -230,7 +228,7 @@ class AlienInvasion:
         self.ship.blitme()
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
-        self.aliens.draw(self.screen)
+        self.cats.draw(self.screen)
         # Вывод информации о счете.
         self.sb.show_score()
         # Кнопка Play отображается в том случае, если игра неактивна.
@@ -241,5 +239,5 @@ class AlienInvasion:
 
 if __name__ == '__main__':
     # Создание экземпляра и запуск игры.
-    ai = AlienInvasion()
+    ai = CatsInvasion()
     ai.run_game()

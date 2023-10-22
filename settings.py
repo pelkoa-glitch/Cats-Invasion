@@ -15,7 +15,7 @@ class Settings:
 
         # Параметры корабля.
         self.ship_speed = 1.5
-        self.ship_limit = 3
+        self.heart_limit = 3
 
         # Параметры снаряда.
         self.bullet_speed = 0.1
@@ -24,24 +24,24 @@ class Settings:
         self.bullet_color = (255, 255, 255)
         self.bullets_allowed = 3
 
-        # Настройки пришельцев.
+        # Настройки котов.
         self.fleet_drop_speed = 10
 
         # Темп ускорения игры.
         self.speedup_scale = 1.1
-        # Темп роста стоимости пришельцев
+        # Темп роста стоимости котов.
         self.score_scale = 1.5
 
-        # Изображения кнопки
+        # Изображения кнопки.
         self.play_button_up = pygame.image.load('images/play_button_up.bmp')
         self.play_button_down = pygame.image.load('images/play_button_down.bmp')
 
-        # Изображения пришельцев
-        self.alien_images = [pygame.image.load('images/catalien1.bmp'),
-                             pygame.image.load('images/catalien2.bmp'),
-                             pygame.image.load('images/catalien4.bmp'),
-                             pygame.image.load('images/catalien3.bmp'),
-                             ]
+        # Изображения кнопок.
+        self.cat_images = [pygame.image.load('images/catalien1.bmp'),
+                           pygame.image.load('images/catalien2.bmp'),
+                           pygame.image.load('images/catalien4.bmp'),
+                           pygame.image.load('images/catalien3.bmp'),
+                           ]
 
         # Запуск инициализации динамических настроек
         self.initialize_dynamic_settings()
@@ -50,16 +50,16 @@ class Settings:
         """Инициализирует настройки, изменяющиеся в ходе игры."""
         self.ship_speed_factor = 10
         self.bullet_speed_factor = 10
-        self.alien_speed_factor = 1
+        self.cat_speed_factor = 30
 
         # fleet_direction = 1 обозначает движение вправо, а -1 - влево.
         self.fleet_direction = 1
         # Подсчет очков
-        self.alien_points = 50
+        self.cat_points = 50
 
     def increase_speed(self):
-        """Увеличение настройки скорости и стоимости пришельцев."""
+        """Увеличение настройки скорости и стоимости котов."""
         self.ship_speed_factor *= self.speedup_scale
         self.bullet_speed_factor *= self.speedup_scale
-        self.alien_speed_factor *= self.speedup_scale
-        self.alien_points = int(self.alien_points * self.score_scale)
+        self.cat_speed_factor *= self.speedup_scale
+        self.cat_points = int(self.cat_points * self.score_scale)
